@@ -29,9 +29,8 @@ int wmain(int argc, wchar_t *argv[]) {
     if (canAccessFile(filePath) == FALSE)
         return 0;
 
-    ZeroMemory(newName, MAX_PATH * sizeof(wchar_t));
     wcscpy(newName, filePath);
-    wcscpy(newName, L"_tmp");
+    wcscat(newName, L"_tmp");
 
     _wrename(filePath, newName);
 
