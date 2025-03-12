@@ -32,6 +32,7 @@ int wmain(int argc, wchar_t *argv[]) {
     wcscpy(newName, filePath);
     wcscat(newName, L"_tmp");
 
+    DeleteFile(newName);
     _wrename(filePath, newName);
 
     fileIn = _wfopen(newName, L"r");
