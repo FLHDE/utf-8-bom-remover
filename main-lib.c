@@ -8,10 +8,9 @@ BOOL canAccessFile(const wchar_t* path) {
     return _waccess(path, 0) == 0 ? TRUE : FALSE;
 }
 
-int wmain(int argc, wchar_t *argv[]) {
+__declspec(dllexport) void RemoveUtf8Bom(const wchar_t* filePath) {
     char bom[4] = { '\xEF', '\xBB', '\xBF', '\0' };
     char buffer[4] = { 0 };
-    wchar_t* filePath;
     wchar_t newName[MAX_PATH];
 
     char c;
@@ -19,15 +18,8 @@ int wmain(int argc, wchar_t *argv[]) {
     FILE* fileIn;
     FILE* fileOut;
 
-    if (argc < 2) {
-        puts("Usage: utf8-bom-remover.exe file-path");
-        return 0;
-    }
-
-    filePath = argv[1];
-
     if (canAccessFile(filePath) == FALSE)
-        return 0;
+        return;
 
     wcscpy(newName, filePath);
     wcscat(newName, L"_tmp");
@@ -57,6 +49,12 @@ int wmain(int argc, wchar_t *argv[]) {
         fclose(fileIn);
         _wrename(newName, filePath);
     }
+}
 
-    return 0;
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
+{
+	if (fdwReason == DLL_PROCESS_ATTACH)
+		DisableThreadLibraryCalls(hinstDLL);
+	
+    return TRUE;
 }
